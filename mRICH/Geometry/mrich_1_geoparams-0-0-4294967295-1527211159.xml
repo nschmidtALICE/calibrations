@@ -4040,7 +4040,7 @@
           <string v="NumOfModule_wall_eside"/>
           <Int_t v="68"/>
           <string v="NumOfModule_wall_eside_proj"/>
-          <Int_t v="56"/>
+          <Int_t v="44"/>
           <string v="NumOfModule_wall_hside"/>
           <Int_t v="1"/>
           <string v="mRICH_sector_hside_0_moduleID"/>
