@@ -279,7 +279,7 @@
       <twoDimVertex x="0.9891765099647809" y="0.14673047445536239"/>
       <twoDimVertex x="0.99518472667219693" y="0.098017140329560506"/>
       <twoDimVertex x="0.99879545620517241" y="0.049067674327418091"/>
-      <section zOrder="0" zPosition="-80" xOffset="0" yOffset="0" scalingFactor="3.1000000000000001"/>
+      <section zOrder="0" zPosition="67" xOffset="0" yOffset="0" scalingFactor="3.1000000000000001"/>
       <section zOrder="1" zPosition="500" xOffset="-10.799999999999999" yOffset="0" scalingFactor="13.9"/>
     </xtru>
     <xtru name="ElectronForwardChamber0x1" lunit="cm">

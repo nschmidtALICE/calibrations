@@ -96,7 +96,7 @@ void ConstructSimplifiedBeamChamber()
   assert(xtru);
   xtru->DefinePolygon(n_seg, x_circle.data(), y_circle.data());
   // Be beam pipe interface
-  xtru->DefineSection(0, Be_Section_Neg,
+  xtru->DefineSection(0, Be_Section_Pos,
                       0, 0,
                       Be_radius);
   // Be far-z interface
