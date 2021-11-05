@@ -4,7 +4,7 @@ Gr1_inner 11
 Gr1_outer 182.75500
 Gr2_inner 11
 Gr2_outer 182.75500
-Gdz 36.5
+Gdz 37.5
 Gx0 0
 Gy0 0
 Gz0 310
@@ -13,7 +13,7 @@ Grot_y 0
 Grot_z 0
 Gtower2_dx 1.845
 Gtower2_dy 1.845
-Gtower2_dz 36.3
+Gtower2_dz 37.5
 xoffset -6.3
 yoffset 0
 tower_type 2
