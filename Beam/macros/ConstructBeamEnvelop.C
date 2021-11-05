@@ -20,7 +20,7 @@
 //! This function construct a enclosure volume that can contain the beam pipe structures
 //! It define the vacuum region and preferably to be as close to the outer surface of the engineering model as possible
 //! In this simple implementation, this is just a simple TGeoPcon that is 5mm larger than the highest radius point of the pipe
-void ConstructBeamEnvelope()
+void ConstructBeamEnvelop()
 {
   TEveManager::Create();
 
