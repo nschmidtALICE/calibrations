@@ -16,7 +16,7 @@ Gtower_dy 5
 Gtower_dz 140
 # Layer settings for tower and longitudinal segmentation
 nlayerspertowerseg 10
-usetailcatcher 0
+usetailcatcher 1
 thickness_absorber 1.6
 thickness_scintillator 0.4
 xoffset -10
