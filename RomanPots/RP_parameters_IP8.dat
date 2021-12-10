@@ -1,0 +1,51 @@
+## -----------------------------------------------------------
+## Roman Pot parameters for IP8
+##
+## sizes are in cm and angles in radians
+##   
+Number_layers		4
+Sensor_size		1.0
+##
+Layer1_pos_x   		+75.75
+Layer1_pos_y 		0
+Layer1_pos_z 		2600
+Layer1_size_x 		30  
+Layer1_size_y 		10
+Layer1_10sigma_x	3.1	
+Layer1_10sigma_y	0.4
+Layer1_Si_size_z	0.03
+Layer1_Cu_size_z	0.2
+Layer1_rot_y 		+0.035
+##
+Layer2_pos_x   		+78.00
+Layer2_pos_y 		0
+Layer2_pos_z 		2800
+Layer2_size_x 		30  
+Layer2_size_y 		10
+Layer2_10sigma_x	3.1
+Layer2_10sigma_y	0.4
+Layer2_Si_size_z	0.03
+Layer2_Cu_size_z	0.2
+Layer2_rot_y 		+0.035
+##
+Layer3_pos_x   		+103.00
+Layer3_pos_y 		0
+Layer3_pos_z 		4300
+Layer3_size_x 		30  
+Layer3_size_y 		10
+Layer3_10sigma_x	0.35	
+Layer3_10sigma_y	0.1
+Layer3_Si_size_z	0.03
+Layer3_Cu_size_z	0.2
+Layer3_rot_y 		-0.029
+##
+Layer4_pos_x   		+107.39
+Layer4_pos_y 		0
+Layer4_pos_z 		4450
+Layer4_size_x 		30  
+Layer4_size_y 		10
+Layer4_10sigma_x	0.35
+Layer4_10sigma_y	0.1
+Layer4_Si_size_z	0.03
+Layer4_Cu_size_z	0.2
+Layer4_rot_y 		-0.029
