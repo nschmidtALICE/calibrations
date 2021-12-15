@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-void tower_pos_gen_crystal()
+void tower_pos_gen_crystal(TString setting = "EEEMCcarbon")
 {
 
   // The Default unit if the fun4all is cm
@@ -20,24 +20,49 @@ void tower_pos_gen_crystal()
   //                7.5[Sci-glass Nathaly]
   //                8.5[Sci-glass g4e]
   
-  double PWO_carbon_Gap = 0.025,
-         PWO_air_Gap = 0.,
-         PWO_reffoil_Gap = 0.0066,
-         PWO_tedlar_Gap = 0.0051,
-         PWO_Gap = PWO_carbon_Gap + PWO_air_Gap + PWO_reffoil_Gap + PWO_tedlar_Gap,
-         PWO_frame_depth = 2.0,
-         PWO_face_lip = 0.1,
-         PWO_Width = 2.0,
-         PWO_tower_width = (PWO_Width + 2. * PWO_Gap),
-         PWO_Thickness = 20,
-         PWO_OuterR = 61., // 200cm version, pure PbW04 SciGlass
-         PWO_InnerR = 7.,
-         PWO_Frame_OuterR = 64.,
-         PWO_Frame_InnerR = 55.,
-         Inner_mat = 0.5; 
-    
+  // EEMC_updatedGeo
+  double PWO_carbon_Gap = 0.025;
+  double PWO_air_Gap = 0.;
+  double PWO_reffoil_Gap = 0.0066;
+  double PWO_tedlar_Gap = 0.0051;
+  double PWO_Gap = PWO_carbon_Gap + PWO_air_Gap + PWO_reffoil_Gap + PWO_tedlar_Gap;
+  double PWO_frame_depth = 2.0;
+  double PWO_face_lip = 0.1;
+  int PWO_sensor_count = 4;
+  double PWO_sensor_dimension = 0.8;
+  double PWO_sensor_thickness = 0.03;
+  double PWO_Width = 2.0;
+  double PWO_tower_width = (PWO_Width + 2. * PWO_Gap);
+  double PWO_Thickness = 20;
+  double PWO_OuterR = 61.; // 200cm version; pure PbW04 SciGlass
+  double PWO_InnerR = 7.;
+  double PWO_Frame_OuterR = 64.;
+  double PWO_Frame_InnerR = 55.;
+  double Inner_mat = 0.5; 
   int PWO_frame_style = 1; // 0 = carbon wrap around each tower, 1 = spacers on front and back
-double inner_glo_zpos = -185; // 250.cm alternative
+  double inner_glo_zpos = -185; // 250.cm alternative
+
+
+  if(setting.Contains("noCarbon")){
+    // EEMC_noCarbon
+    PWO_carbon_Gap = 0.0;
+    PWO_air_Gap = 0.025;
+    PWO_reffoil_Gap = 0.0;
+    PWO_tedlar_Gap = 0.0;
+    PWO_Gap = PWO_carbon_Gap + PWO_air_Gap + PWO_reffoil_Gap + PWO_tedlar_Gap;
+    PWO_frame_depth = 0.0;
+    PWO_face_lip = 0.0;
+    PWO_Width = 2.0;
+    PWO_tower_width = (PWO_Width + 2. * PWO_Gap);
+    PWO_Thickness = 20;
+    PWO_OuterR = 61.; // 200cm version; pure PbW04 SciGlass
+    PWO_InnerR = 7.;
+    PWO_Frame_OuterR = 64.;
+    PWO_Frame_InnerR = 55.;
+    Inner_mat = 0.5; 
+    PWO_frame_style = 0;
+  }
+    
 // double inner_glo_zpos = -200., // 250.cm alternative
  
 
@@ -94,7 +119,7 @@ double inner_glo_zpos = -185; // 250.cm alternative
   // Generating the crystal position mapping
   // =========================================
   
-  ofs.open("tower_map_purecrystal_185cm_EEEMCcarbon.txt");
+  ofs.open(Form("tower_map_purecrystal_185cm_%s.txt",setting.Data()));
   if (!ofs.is_open()) 
     cout << "Failed to open file." << endl;
 
@@ -122,6 +147,9 @@ double inner_glo_zpos = -185; // 250.cm alternative
   ofs << "carbon_frame_style " << PWO_frame_style << endl;
   ofs << "carbon_frame_depth " << PWO_frame_depth << endl;
   ofs << "carbon_face_lip " << PWO_face_lip << endl;
+  ofs << "sensor_count " << PWO_sensor_count << endl;
+  ofs << "sensor_dimension " << PWO_sensor_dimension << endl;
+  ofs << "sensor_thickness " << PWO_sensor_thickness << endl;
   ofs << "Gair_gap " << PWO_air_Gap << endl;
   ofs << "Gmaterial " << Inner_mat << endl;
   ofs << "Gcolor_R " << 0.0 << endl;

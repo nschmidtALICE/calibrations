@@ -21,6 +21,9 @@ Gtedlar_thickness 0.0051
 carbon_frame_style 1
 carbon_frame_depth 2
 carbon_face_lip 0.1
+sensor_count 4
+sensor_dimension 0.8
+sensor_thickness 0.03
 Gair_gap 0
 Gmaterial 0.5
 Gcolor_R 0
