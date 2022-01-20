@@ -3,8 +3,6 @@ Gr1_inner 8
 Gr1_outer 61
 Gr2_inner 8
 Gr2_outer 61
-Gdx 2.07336
-Gdy 2.07336
 Gdz 20.05
 Gx0 0
 Gy0 0
@@ -16,11 +14,7 @@ Gcrystal_dx 1.95
 Gcrystal_dy 1.95
 Gcrystal_dz 20
 Gcarbon_gap 0.025
-Greflective_foil_thickness 0.0066
-Gtedlar_thickness 0.00508
-carbon_frame_style 1
-carbon_frame_depth 2.0
-carbon_face_lip 0.1
+carbon_frame_style 0
 Gair_gap 0
 Gmaterial 0.5
 Gcolor_R 0

@@ -19,6 +19,9 @@ nlayerspertowerseg 10
 usetailcatcher 1
 thickness_absorber 1.6
 thickness_scintillator 0.4
+embed_fiber 1
+frame_width 0.1
+width_coating 0.005
 xoffset -10
 yoffset 0
 #Tower type,idx_j,idx_k,idx_l,x[cm],y[cm],z[cm],dx[cm],dy[cm],dz[cm],rot_x,rot_y,rot_z

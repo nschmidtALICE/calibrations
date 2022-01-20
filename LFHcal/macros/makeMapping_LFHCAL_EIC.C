@@ -35,6 +35,11 @@ void makeMapping_LFHCAL_EIC( TString setup="2x" )
   double scintthick = 0.4;
   double absthick   = 1.6;
   int nLayerPerSeg  = 10;
+
+  double width_coating = 0;
+  double frame_width   = 0;
+  int embed_fiber  = 0;
+  int usetailcatcher  = 0;
   
   double offset_rmin_x = 0.0; // cm
   double offset_rmin_y = 0.0; // cm
@@ -75,6 +80,10 @@ void makeMapping_LFHCAL_EIC( TString setup="2x" )
       
       offset_rmin_x = -10.0; // cm
       offset_rmin_y = 0.0; // cm
+
+      width_coating = 0.005;
+      frame_width   = 0.1;
+      embed_fiber  = 1;
   } else if ( setup.Contains("asymmetric") ) {
       /* Detector envelope size (cone shape) */
       lhcal_rmin1 = 17; // cm
@@ -90,6 +99,9 @@ void makeMapping_LFHCAL_EIC( TString setup="2x" )
       tower_dz    = 140.; //cm
   }
 
+  if (setup.Contains("tailcatcher")){
+    usetailcatcher = 1;
+  }
   // NOTE: code below assumes tower_dx = tower_dy
   // Will need to be updated if that's not the case JGL 12/27/2015
   unsigned n_towers_j = 2 * ( (unsigned)( ( (lhcal_rmax1+0.5*tower_dx) /tower_dx) )) + 1;
@@ -128,9 +140,12 @@ void makeMapping_LFHCAL_EIC( TString setup="2x" )
   fout << "nlayerspertowerseg " << nLayerPerSeg << endl;
   fout << "thickness_absorber " << absthick << endl;
   fout << "thickness_scintillator " << scintthick << endl;
+  fout << "width_coating " << width_coating << endl;
+  fout << "frame_width " << frame_width << endl;
+  fout << "embed_fiber " << embed_fiber << endl;
+  fout << "usetailcatcher " << usetailcatcher << endl;
   fout << "xoffset " << offset_rmin_x << endl;
   fout << "yoffset " << offset_rmin_y << endl;
-  
   /* Tower mapping */
   fout << "#Tower type,idx_j,idx_k,idx_l,x[cm],y[cm],z[cm],dx[cm],dy[cm],dz[cm],rot_x,rot_y,rot_z" << endl;
 
