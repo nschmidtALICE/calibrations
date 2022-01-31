@@ -1,0 +1,13 @@
+# CDR eAu Beam parameter with strong hadron cooling
+# by Wenliang (Bill) Li: wenliang.billlee@gmail.com
+# Reference: https://www.bnl.gov/ec/files/eic_cdr_final.pdf
+# Page 104, Table 3.5
+#
+## Setting  beta*_p_h[cm]         beta*_p_v[cm]         beta*_e_h[cm]         beta*_e_v[cm]  
+#          RMS emittance_p_h[nm] RMS emittance_p_v[nm] RMS emittance_e_h[nm] RMS emittance_e_v[nm]
+#          ang_div_p_h[um]       ang_div_p_v[um]       ang_div_e_h[um]       ang_div_e_v[um] 
+#          bunch_p_l[cm]         bunch_e_l[cm]
+110x18      91       4    196      41   43.2    5.8     20.0    0.6    218     379     101      37      7     0.9
+110x10      91       4    193      12   42.2    3.0     20.0    1.0    216     274     102      92      7     0.7
+110x5       91       4    193       6   42.3    3.0     20.0    2.0    215     275     102     185      7     0.7
+41x5        90       4    307      11   68.1    5.7     20.0    2.0    275     377      81     136   11.6     0.7

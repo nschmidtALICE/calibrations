@@ -1,0 +1,14 @@
+# CDR Beam High Acceptance Beam Parameter
+# by Wenliang (Bill) Li: wenliang.billlee@gmail.com
+# Reference: https://www.bnl.gov/ec/files/eic_cdr_final.pdf
+# Page 103, Table 3.4
+#
+# Setting  beta*_p_h[cm]         beta*_p_v[cm]         beta*_e_h[cm]         beta*_e_v[cm]  
+#          RMS emittance_p_h[nm] RMS emittance_p_v[nm] RMS emittance_e_h[nm] RMS emittance_e_v[nm]
+#          ang_div_p_h[um]       ang_div_p_v[um]       ang_div_e_h[um]       ang_div_e_v[um] 
+#          bunch_p_l[cm]         bunch_e_l[cm]
+275x18    417      38    306      30    17.6     1.6    24.0    2.0     65      65      89      82     6     0.9
+275x10    265      24    149      19      11     1.0    20.0    1.3     65      65     116      84     6     0.7
+100x10     94     8.5    143      18      30     2.7    20.0    1.3    180     180     118      86     7     0.7
+100x5      80     7.2    103     9.2      26     2.3    20.0    1.8    180     180     140     140     7     0.7
+41x5       90     7.1    196    21.0      44      10    20.0    3.5    220     380     101     129     7.5   0.7
