@@ -15,7 +15,7 @@ Layer1_10sigma_x	3.1
 Layer1_10sigma_y	0.4
 Layer1_Si_size_z	0.03
 Layer1_Cu_size_z	0.2
-Layer1_rot_y 		+0.035
+Layer1_rot_y 		-0.035
 ##
 Layer2_pos_x   		+78.00
 Layer2_pos_y 		0
@@ -26,7 +26,7 @@ Layer2_10sigma_x	3.1
 Layer2_10sigma_y	0.4
 Layer2_Si_size_z	0.03
 Layer2_Cu_size_z	0.2
-Layer2_rot_y 		+0.035
+Layer2_rot_y 		-0.035
 ##
 Layer3_pos_x   		+103.00
 Layer3_pos_y 		0
