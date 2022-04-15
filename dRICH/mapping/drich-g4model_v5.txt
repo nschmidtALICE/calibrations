@@ -1,0 +1,457 @@
+// Define the dRICh Geometry and Materials
+//
+//   the current dRICh mother volume is a conical vessel filled by the gas radiator
+//   the vessel hosts 6 petals
+//   each petal has an aerogel radiator, an acrylic filter, a mirror and sensor surface
+//
+//   z axis is along beam pipe
+//   x axis is transverse to beam pipe
+//   reference dRICh petal has y=0
+//
+// Ref:
+//    https://geant4.web.cern.ch/sites/geant4.web.cern.ch/files/geant4/collaboration/working_groups/geometry/docs/textgeom/textgeom.pdf
+//    geant4 source/persistency/ascii
+//
+// original dRICh simulation source code: github.com/EIC-eRD11/dualRICH_inMEIC
+//
+// Authors: C. Cisbani, A. Del Dotto, C. Fanelli
+//
+// Version: 0.1
+//
+// Date: Mar/2021
+//
+
+// ----------
+// names of volumes, surface, materials - they mat differ from porting to porting
+// they are used in optical description classes and likely in the definition of sensity volume responses
+// :PS parameter string seems to be not documented yet! and probably no operations on strings are permitted
+:PS vesselName   EICG4dRICHvessel      // dRICh container vessel
+:PS vesselName1  EICG4dRICHvessel1
+:PS vesselName2  EICG4dRICHvessel2
+:PS petalName    EICG4dRICHpetal       // single assembly petal volume, filled by gas and containing the other components
+:PS petalName1   EICG4dRICHpetal1
+:PS petalName2   EICG4dRICHpetal2
+:PS aerName      EICG4dRICHaerogel
+:PS filterName	 EICG4dRICHfilter
+:PS mirrorName   EICG4dRICHmirror
+:PS sensorTName  EICG4dRICHpsst        // single photo sensor tile
+//
+:PS vesselMatName G4_Al              // container vessel material
+:PS gasMatName    EICG4dRICHgasMat
+:PS aerMatName    EICG4dRICHaerogelMat
+:PS filterMatName EICG4dRICHfilterMat
+:PS mirrorMatName EICG4dRICHmirrorMat
+:PS sensorMatName G4_Si
+
+// ----------
+// Parameters
+// default units: mm, deg, g/cm3, g/mole
+// be carefull, management of units in the geometry text file is somehow confusing (to me-EC)
+// ----------
+
+// vessel is the whole dRICH mother volume (including the walls)
+:P vesselInRadius 10.139*cm
+:P vesselInRadiusMid 11.127*cm
+:P vesselInRadiusOut 15.079*cm
+//:P vesselLengthZ 100.0*cm
+:P vesselconeZ 20.0*cm
+:P vesselcyliZ 80.0*cm
+:P vesselOutRadiusEntrance 180.*cm
+:P vesselOutRadiusExit 180.*cm
+:P vesselWallThickness 0.5*cm
+:P vesselWindowThickness 0.1*cm
+
+:P petalPhiStart -28.
+:P petalPhiDelta  56.
+
+:P mirrorPhiStart -25.
+:P mirrorPhiDelta  50.
+
+:P aerogelThickness 4.*cm
+:P aerogelInRadius $vesselInRadius+$vesselWallThickness+1.6*mm
+:P aerogelOutRadius 90.*cm
+
+:P filterInRadius $vesselInRadius+$vesselWallThickness+2.0*mm
+
+:P aerogelDensity 0.1
+
+:P gasDensity 0.005734
+
+:P acrylicFilterThickness 0.32*mm
+
+:P mirrorRadius    200.*cm
+:P mirrorThickness  0.2*cm
+:P mirrorCenterX   125.0*cm //145.*cm
+:P mirrorCenterZ -160.81*cm //-150.155*cm
+:P mirrorThetaSpan  48.        // NOTE: this depends on the size of the vessel!!
+
+:P sensorTileLengthX   5.*cm
+:P sensorTileLengthY   5.*cm
+:P sensorTileThickness 1.*cm
+
+// ------------------
+// Main Derived parameters
+// ------------------
+:P vesselLengthZ $vesselconeZ+$vesselcyliZ 
+:P aerogelZ0 -$vesselconeZ/2.+$vesselWindowThickness+$aerogelThickness/2.
+:P acrylicFilterZ0 $aerogelZ0+$aerogelThickness/2.+$acrylicFilterThickness/2.
+
+:P airFractionInAerogel (2.32-$aerogelDensity)/(2.32-0.00120479)
+
+:P sio2FractionInAerogel (1.-$airFractionInAerogel)
+
+// internal vessel
+:P vInR $vesselInRadius+$vesselWallThickness
+:P vInR1 $vesselInRadiusMid+$vesselWallThickness
+:P vOutR0 90.0*cm-$vesselWallThickness
+:P vOutR1 105.0*cm-$vesselWallThickness
+//:P vLenZ $vesselLengthZ-2.*$vesselWindowThickness
+:P vLenZ $vesselconeZ //-2.*$vesselWindowThickness
+:P v2LenZ $vesselcyliZ //-2.*$vesselWindowThickness
+
+:P v2InR $vesselInRadiusMid+$vesselWallThickness
+:P v2InR1 $vesselInRadiusOut+$vesselWallThickness
+:P v2OutR0 $vesselOutRadiusEntrance-$vesselWallThickness
+:P v2OutR1 $vesselOutRadiusExit-$vesselWallThickness
+
+:P mirrorInRadius $mirrorRadius-$mirrorThickness
+:P mirrorThetaRot asin($mirrorCenterX/$mirrorRadius)/deg
+:P mirrorTheta0 ($mirrorThetaRot-asin(($mirrorCenterX-$v2InR1)/$mirrorRadius)/deg)
+//:P mirrorTheta1 (acos(($vesselLengthZ/2.-$vesselWallThickness-$mirrorCenterZ)/$mirrorRadius))/deg
+//:P mirrorThetaSpan $mirrorThetaRot-$mirrorTheta0-$mirrorTheta1
+
+// uncomment the following line to dump values of parameters
+//:P dummy $nonesiste
+
+// ------------------------------------------------
+// Materials G4_SILICON_DIOXIDE, G4_AIR, G4_F, G4_C
+// ------------------------------------------------
+
+:MIXT_BY_VOLUME EICG4dRICHaerogelMat $aerogelDensity 2
+      G4_AIR $airFractionInAerogel
+      G4_SILICON_DIOXIDE $sio2FractionInAerogel
+
+// acrylic material to be improved
+:MIXT_BY_WEIGHT $filterMatName 1.19 2
+      G4_PLEXIGLASS 0.99
+      G4_POLYVINYL_ACETATE 0.01
+
+:MIXT_BY_NATOMS EICG4dRICHgasMat $gasDensity 2
+      C 2
+      F 6
+
+// acrylic material **To Be Improved**
+:MIXT_BY_WEIGHT EICG4dRICHmirrorMat 1.19 2
+      G4_PLEXIGLASS 0.99
+      G4_POLYVINYL_ACETATE 0.01
+      
+
+// ----------------------------------
+// Solids and Logical Volume combined
+// ----------------------------------
+
+// vessel: this is the mother volume of the dRICH, include thicknesses
+:VOLU $vesselName CONS $vesselInRadius $vesselOutRadiusEntrance $vesselInRadiusOut $vesselOutRadiusExit $vesselLengthZ/2. 0. 360. G4_AIR
+:COLOR $vesselName 0.95 0.95 0.95 0.0
+:CHECK_OVERLAPS $vesselName ON
+
+:VOLU $vesselName1 CONS $vesselInRadiusMid $vesselOutRadiusEntrance $vesselInRadiusOut $vesselOutRadiusExit $vesselcyliZ/2. 0. 360. $vesselMatName
+:COLOR $vesselName1 1.0 0.5 0.0 1.0
+:CHECK_OVERLAPS $vesselName1 ON
+
+:VOLU $vesselName2 CONS $vesselInRadius 90.0*cm $vesselInRadiusMid 105.0*cm $vesselconeZ/2. 0. 360. $vesselMatName
+:COLOR $vesselName2 1.0 0.0 1.0 0.95
+:CHECK_OVERLAPS $vesselName2 ON
+
+// petal, filled with gas $gasMatName
+:VOLU $petalName1 CONS $vInR $vOutR0 $vInR1 $vOutR1 $vLenZ/2. -30. 60. $gasMatName
+:COLOR $petalName1 0.9 0.9 0.9 1.0
+:CHECK_OVERLAPS $petalName1 ON
+
+:VOLU $petalName2 CONS $v2InR $v2OutR0 $v2InR1 $v2OutR1 $v2LenZ/2. -30. 60. $gasMatName
+:COLOR $petalName2 0.9 0.9 0.9 1.0
+:CHECK_OVERLAPS $petalName2 ON
+
+// aerogel
+:VOLU $aerName CONS $aerogelInRadius+0.0*mm $aerogelOutRadius-4.9*mm $aerogelInRadius+0.5*mm $aerogelOutRadius-0.0*mm $aerogelThickness/2. $petalPhiStart $petalPhiDelta $aerMatName
+:COLOR $aerName 0.0 1.0 1.0 0.4
+:CHECK_OVERLAPS $aerName ON
+
+// filter
+:VOLU $filterName CONS $filterInRadius $aerogelOutRadius $filterInRadius $aerogelOutRadius $acrylicFilterThickness/2. $petalPhiStart $petalPhiDelta $filterMatName
+:COLOR $filterName 0.0 1.0 0.0 0.5
+:CHECK_OVERLAPS $filterName ON
+
+// spherical mirror
+:VOLU $mirrorName SPHERE $mirrorInRadius $mirrorRadius $mirrorPhiStart $mirrorPhiDelta $mirrorTheta0 $mirrorThetaSpan $mirrorMatName
+:COLOR $mirrorName 0.5 0.5 0.8 1.0
+:CHECK_OVERLAPS $mirrorName ON
+
+// photo-sensor single tile
+:VOLU $sensorTName BOX $sensorTileLengthX/2. $sensorTileLengthY/2. $sensorTileThickness/2. $sensorMatName
+:COLOR $sensorTName 0.6 0.2 0.2 0.5
+:CHECK_OVERLAPS $sensorTName ON
+
+// -------------
+// Place volumes
+// -------------
+
+// rotation matrices
+// -- petal rotations
+:ROTM R1 0. 0. 0.
+:ROTM R2 0. 0. 60.
+:ROTM R3 0. 0. 120.
+:ROTM R4 0. 0. 180.
+:ROTM R5 0. 0. 240.
+:ROTM R6 0. 0. 300.
+// -- rotation around y axis
+//:ROTM RMIR (90.-$mirrorThetaRot/deg) 0. 90. 90. -$mirrorThetaRot/deg 0.
+:ROTM RMIR 0. $mirrorThetaRot 0.
+
+//for small dRICH
+:PLACE $vesselName2 1 $vesselName R1 0. 0. -40.0*cm
+:PLACE $vesselName1 1 $vesselName R1 0. 0. +10.0*cm
+
+// place petals
+:PLACE $petalName1 1 $vesselName2 R1 0. 0. 0.
+:PLACE $petalName1 2 $vesselName2 R2 0. 0. 0.
+:PLACE $petalName1 3 $vesselName2 R3 0. 0. 0.
+:PLACE $petalName1 4 $vesselName2 R4 0. 0. 0.
+:PLACE $petalName1 5 $vesselName2 R5 0. 0. 0.
+:PLACE $petalName1 6 $vesselName2 R6 0. 0. 0.
+
+:PLACE $petalName2 1 $vesselName1 R1 0. 0. 0.
+:PLACE $petalName2 2 $vesselName1 R2 0. 0. 0.
+:PLACE $petalName2 3 $vesselName1 R3 0. 0. 0.
+:PLACE $petalName2 4 $vesselName1 R4 0. 0. 0.
+:PLACE $petalName2 5 $vesselName1 R5 0. 0. 0.
+:PLACE $petalName2 6 $vesselName1 R6 0. 0. 0.
+
+// place volumes in petals
+:PLACE $aerName 1 $petalName1 R1 0. 0. $aerogelZ0
+:PLACE $filterName 2 $petalName1 R1 0. 0. $acrylicFilterZ0
+:PLACE $mirrorName 1 $petalName2 RMIR $mirrorCenterX 0. $mirrorCenterZ
+:PLACE $sensorTName 1 $petalName2 R1 114.0*cm -37.50*cm -33.5651*cm
+:PLACE $sensorTName 2 $petalName2 R1 114.0*cm -32.50*cm -32.2696*cm
+:PLACE $sensorTName 3 $petalName2 R1 114.0*cm -27.50*cm -31.1689*cm
+:PLACE $sensorTName 4 $petalName2 R1 114.0*cm -22.50*cm -30.2584*cm
+:PLACE $sensorTName 5 $petalName2 R1 114.0*cm -17.50*cm -29.5343*cm
+:PLACE $sensorTName 6 $petalName2 R1 114.0*cm -12.50*cm -28.9937*cm
+:PLACE $sensorTName 7 $petalName2 R1 114.0*cm -7.50*cm -28.6345*cm
+:PLACE $sensorTName 8 $petalName2 R1 114.0*cm -2.50*cm -28.4552*cm
+:PLACE $sensorTName 9 $petalName2 R1 114.0*cm 2.50*cm -28.4552*cm
+:PLACE $sensorTName 10 $petalName2 R1 114.0*cm 7.50*cm -28.6345*cm
+:PLACE $sensorTName 11 $petalName2 R1 114.0*cm 12.50*cm -28.9937*cm
+:PLACE $sensorTName 12 $petalName2 R1 114.0*cm 17.50*cm -29.5343*cm
+:PLACE $sensorTName 13 $petalName2 R1 114.0*cm 22.50*cm -30.2584*cm
+:PLACE $sensorTName 14 $petalName2 R1 114.0*cm 27.50*cm -31.1689*cm
+:PLACE $sensorTName 15 $petalName2 R1 114.0*cm 32.50*cm -32.2696*cm
+:PLACE $sensorTName 16 $petalName2 R1 114.0*cm 37.50*cm -33.5651*cm
+:PLACE $sensorTName 17 $petalName2 R1 119.0*cm -37.50*cm -33.2493*cm
+:PLACE $sensorTName 18 $petalName2 R1 119.0*cm -32.50*cm -31.9568*cm
+:PLACE $sensorTName 19 $petalName2 R1 119.0*cm -27.50*cm -30.8587*cm
+:PLACE $sensorTName 20 $petalName2 R1 119.0*cm -22.50*cm -29.9502*cm
+:PLACE $sensorTName 21 $petalName2 R1 119.0*cm -17.50*cm -29.2277*cm
+:PLACE $sensorTName 22 $petalName2 R1 119.0*cm -12.50*cm -28.6883*cm
+:PLACE $sensorTName 23 $petalName2 R1 119.0*cm -7.50*cm -28.3299*cm
+:PLACE $sensorTName 24 $petalName2 R1 119.0*cm -2.50*cm -28.151*cm
+:PLACE $sensorTName 25 $petalName2 R1 119.0*cm 2.50*cm -28.151*cm
+:PLACE $sensorTName 26 $petalName2 R1 119.0*cm 7.50*cm -28.3299*cm
+:PLACE $sensorTName 27 $petalName2 R1 119.0*cm 12.50*cm -28.6883*cm
+:PLACE $sensorTName 28 $petalName2 R1 119.0*cm 17.50*cm -29.2277*cm
+:PLACE $sensorTName 29 $petalName2 R1 119.0*cm 22.50*cm -29.9502*cm
+:PLACE $sensorTName 30 $petalName2 R1 119.0*cm 27.50*cm -30.8587*cm
+:PLACE $sensorTName 31 $petalName2 R1 119.0*cm 32.50*cm -31.9568*cm
+:PLACE $sensorTName 32 $petalName2 R1 119.0*cm 37.50*cm -33.2493*cm
+:PLACE $sensorTName 33 $petalName2 R1 124.0*cm -37.50*cm -33.1195*cm
+:PLACE $sensorTName 34 $petalName2 R1 124.0*cm -32.50*cm -31.8282*cm
+:PLACE $sensorTName 35 $petalName2 R1 124.0*cm -27.50*cm -30.7311*cm
+:PLACE $sensorTName 36 $petalName2 R1 124.0*cm -22.50*cm -29.8235*cm
+:PLACE $sensorTName 37 $petalName2 R1 124.0*cm -17.50*cm -29.1017*cm
+:PLACE $sensorTName 38 $petalName2 R1 124.0*cm -12.50*cm -28.5627*cm
+:PLACE $sensorTName 39 $petalName2 R1 124.0*cm -7.50*cm -28.2046*cm
+:PLACE $sensorTName 40 $petalName2 R1 124.0*cm -2.50*cm -28.0259*cm
+:PLACE $sensorTName 41 $petalName2 R1 124.0*cm 2.50*cm -28.0259*cm
+:PLACE $sensorTName 42 $petalName2 R1 124.0*cm 7.50*cm -28.2046*cm
+:PLACE $sensorTName 43 $petalName2 R1 124.0*cm 12.50*cm -28.5627*cm
+:PLACE $sensorTName 44 $petalName2 R1 124.0*cm 17.50*cm -29.1017*cm
+:PLACE $sensorTName 45 $petalName2 R1 124.0*cm 22.50*cm -29.8235*cm
+:PLACE $sensorTName 46 $petalName2 R1 124.0*cm 27.50*cm -30.7311*cm
+:PLACE $sensorTName 47 $petalName2 R1 124.0*cm 32.50*cm -31.8282*cm
+:PLACE $sensorTName 48 $petalName2 R1 124.0*cm 37.50*cm -33.1195*cm
+:PLACE $sensorTName 49 $petalName2 R1 129.0*cm -37.50*cm -33.1751*cm
+:PLACE $sensorTName 50 $petalName2 R1 129.0*cm -32.50*cm -31.8833*cm
+:PLACE $sensorTName 51 $petalName2 R1 129.0*cm -27.50*cm -30.7858*cm
+:PLACE $sensorTName 52 $petalName2 R1 129.0*cm -22.50*cm -29.8778*cm
+:PLACE $sensorTName 53 $petalName2 R1 129.0*cm -17.50*cm -29.1557*cm
+:PLACE $sensorTName 54 $petalName2 R1 129.0*cm -12.50*cm -28.6165*cm
+:PLACE $sensorTName 55 $petalName2 R1 129.0*cm -7.50*cm -28.2583*cm
+:PLACE $sensorTName 56 $petalName2 R1 129.0*cm -2.50*cm -28.0795*cm
+:PLACE $sensorTName 57 $petalName2 R1 129.0*cm 2.50*cm -28.0795*cm
+:PLACE $sensorTName 58 $petalName2 R1 129.0*cm 7.50*cm -28.2583*cm
+:PLACE $sensorTName 59 $petalName2 R1 129.0*cm 12.50*cm -28.6165*cm
+:PLACE $sensorTName 60 $petalName2 R1 129.0*cm 17.50*cm -29.1557*cm
+:PLACE $sensorTName 61 $petalName2 R1 129.0*cm 22.50*cm -29.8778*cm
+:PLACE $sensorTName 62 $petalName2 R1 129.0*cm 27.50*cm -30.7858*cm
+:PLACE $sensorTName 63 $petalName2 R1 129.0*cm 32.50*cm -31.8833*cm
+:PLACE $sensorTName 64 $petalName2 R1 129.0*cm 37.50*cm -33.1751*cm
+:PLACE $sensorTName 65 $petalName2 R1 134.0*cm -37.50*cm -33.4164*cm
+:PLACE $sensorTName 66 $petalName2 R1 134.0*cm -32.50*cm -32.1223*cm
+:PLACE $sensorTName 67 $petalName2 R1 134.0*cm -27.50*cm -31.0228*cm
+:PLACE $sensorTName 68 $petalName2 R1 134.0*cm -22.50*cm -30.1133*cm
+:PLACE $sensorTName 69 $petalName2 R1 134.0*cm -17.50*cm -29.3899*cm
+:PLACE $sensorTName 70 $petalName2 R1 134.0*cm -12.50*cm -28.8499*cm
+:PLACE $sensorTName 71 $petalName2 R1 134.0*cm -7.50*cm -28.491*cm
+:PLACE $sensorTName 72 $petalName2 R1 134.0*cm -2.50*cm -28.312*cm
+:PLACE $sensorTName 73 $petalName2 R1 134.0*cm 2.50*cm -28.312*cm
+:PLACE $sensorTName 74 $petalName2 R1 134.0*cm 7.50*cm -28.491*cm
+:PLACE $sensorTName 75 $petalName2 R1 134.0*cm 12.50*cm -28.8499*cm
+:PLACE $sensorTName 76 $petalName2 R1 134.0*cm 17.50*cm -29.3899*cm
+:PLACE $sensorTName 77 $petalName2 R1 134.0*cm 22.50*cm -30.1133*cm
+:PLACE $sensorTName 78 $petalName2 R1 134.0*cm 27.50*cm -31.0228*cm
+:PLACE $sensorTName 79 $petalName2 R1 134.0*cm 32.50*cm -32.1223*cm
+:PLACE $sensorTName 80 $petalName2 R1 134.0*cm 37.50*cm -33.4164*cm
+:PLACE $sensorTName 81 $petalName2 R1 139.0*cm -37.50*cm -33.8443*cm
+:PLACE $sensorTName 82 $petalName2 R1 139.0*cm -32.50*cm -32.5461*cm
+:PLACE $sensorTName 83 $petalName2 R1 139.0*cm -27.50*cm -31.4432*cm
+:PLACE $sensorTName 84 $petalName2 R1 139.0*cm -22.50*cm -30.5309*cm
+:PLACE $sensorTName 85 $petalName2 R1 139.0*cm -17.50*cm -29.8054*cm
+:PLACE $sensorTName 86 $petalName2 R1 139.0*cm -12.50*cm -29.2637*cm
+:PLACE $sensorTName 87 $petalName2 R1 139.0*cm -7.50*cm -28.9038*cm
+:PLACE $sensorTName 88 $petalName2 R1 139.0*cm -2.50*cm -28.7242*cm
+:PLACE $sensorTName 89 $petalName2 R1 139.0*cm 2.50*cm -28.7242*cm
+:PLACE $sensorTName 90 $petalName2 R1 139.0*cm 7.50*cm -28.9038*cm
+:PLACE $sensorTName 91 $petalName2 R1 139.0*cm 12.50*cm -29.2637*cm
+:PLACE $sensorTName 92 $petalName2 R1 139.0*cm 17.50*cm -29.8054*cm
+:PLACE $sensorTName 93 $petalName2 R1 139.0*cm 22.50*cm -30.5309*cm
+:PLACE $sensorTName 94 $petalName2 R1 139.0*cm 27.50*cm -31.4432*cm
+:PLACE $sensorTName 95 $petalName2 R1 139.0*cm 32.50*cm -32.5461*cm
+:PLACE $sensorTName 96 $petalName2 R1 139.0*cm 37.50*cm -33.8443*cm
+:PLACE $sensorTName 97 $petalName2 R1 144.0*cm -37.50*cm -34.4607*cm
+:PLACE $sensorTName 98 $petalName2 R1 144.0*cm -32.50*cm -33.1566*cm
+:PLACE $sensorTName 99 $petalName2 R1 144.0*cm -27.50*cm -32.0487*cm
+:PLACE $sensorTName 100 $petalName2 R1 144.0*cm -22.50*cm -31.1324*cm
+:PLACE $sensorTName 101 $petalName2 R1 144.0*cm -17.50*cm -30.4037*cm
+:PLACE $sensorTName 102 $petalName2 R1 144.0*cm -12.50*cm -29.8597*cm
+:PLACE $sensorTName 103 $petalName2 R1 144.0*cm -7.50*cm -29.4982*cm
+:PLACE $sensorTName 104 $petalName2 R1 144.0*cm -2.50*cm -29.3178*cm
+:PLACE $sensorTName 105 $petalName2 R1 144.0*cm 2.50*cm -29.3178*cm
+:PLACE $sensorTName 106 $petalName2 R1 144.0*cm 7.50*cm -29.4982*cm
+:PLACE $sensorTName 107 $petalName2 R1 144.0*cm 12.50*cm -29.8597*cm
+:PLACE $sensorTName 108 $petalName2 R1 144.0*cm 17.50*cm -30.4037*cm
+:PLACE $sensorTName 109 $petalName2 R1 144.0*cm 22.50*cm -31.1324*cm
+:PLACE $sensorTName 110 $petalName2 R1 144.0*cm 27.50*cm -32.0487*cm
+:PLACE $sensorTName 111 $petalName2 R1 144.0*cm 32.50*cm -33.1566*cm
+:PLACE $sensorTName 112 $petalName2 R1 144.0*cm 37.50*cm -34.4607*cm
+:PLACE $sensorTName 113 $petalName2 R1 149.0*cm -37.50*cm -35.2681*cm
+:PLACE $sensorTName 114 $petalName2 R1 149.0*cm -32.50*cm -33.9562*cm
+:PLACE $sensorTName 115 $petalName2 R1 149.0*cm -27.50*cm -32.8418*cm
+:PLACE $sensorTName 116 $petalName2 R1 149.0*cm -22.50*cm -31.9201*cm
+:PLACE $sensorTName 117 $petalName2 R1 149.0*cm -17.50*cm -31.1872*cm
+:PLACE $sensorTName 118 $petalName2 R1 149.0*cm -12.50*cm -30.6401*cm
+:PLACE $sensorTName 119 $petalName2 R1 149.0*cm -7.50*cm -30.2765*cm
+:PLACE $sensorTName 120 $petalName2 R1 149.0*cm -2.50*cm -30.0951*cm
+:PLACE $sensorTName 121 $petalName2 R1 149.0*cm 2.50*cm -30.0951*cm
+:PLACE $sensorTName 122 $petalName2 R1 149.0*cm 7.50*cm -30.2765*cm
+:PLACE $sensorTName 123 $petalName2 R1 149.0*cm 12.50*cm -30.6401*cm
+:PLACE $sensorTName 124 $petalName2 R1 149.0*cm 17.50*cm -31.1872*cm
+:PLACE $sensorTName 125 $petalName2 R1 149.0*cm 22.50*cm -31.9201*cm
+:PLACE $sensorTName 126 $petalName2 R1 149.0*cm 27.50*cm -32.8418*cm
+:PLACE $sensorTName 127 $petalName2 R1 149.0*cm 32.50*cm -33.9562*cm
+:PLACE $sensorTName 128 $petalName2 R1 149.0*cm 37.50*cm -35.2681*cm
+:PLACE $sensorTName 129 $petalName2 R1 154.0*cm -37.50*cm -36.2702*cm
+:PLACE $sensorTName 130 $petalName2 R1 154.0*cm -32.50*cm -34.9483*cm
+:PLACE $sensorTName 131 $petalName2 R1 154.0*cm -27.50*cm -33.8257*cm
+:PLACE $sensorTName 132 $petalName2 R1 154.0*cm -22.50*cm -32.8973*cm
+:PLACE $sensorTName 133 $petalName2 R1 154.0*cm -17.50*cm -32.1591*cm
+:PLACE $sensorTName 134 $petalName2 R1 154.0*cm -12.50*cm -31.6081*cm
+:PLACE $sensorTName 135 $petalName2 R1 154.0*cm -7.50*cm -31.242*cm
+:PLACE $sensorTName 136 $petalName2 R1 154.0*cm -2.50*cm -31.0593*cm
+:PLACE $sensorTName 137 $petalName2 R1 154.0*cm 2.50*cm -31.0593*cm
+:PLACE $sensorTName 138 $petalName2 R1 154.0*cm 7.50*cm -31.242*cm
+:PLACE $sensorTName 139 $petalName2 R1 154.0*cm 12.50*cm -31.6081*cm
+:PLACE $sensorTName 140 $petalName2 R1 154.0*cm 17.50*cm -32.1591*cm
+:PLACE $sensorTName 141 $petalName2 R1 154.0*cm 22.50*cm -32.8973*cm
+:PLACE $sensorTName 142 $petalName2 R1 154.0*cm 27.50*cm -33.8257*cm
+:PLACE $sensorTName 143 $petalName2 R1 154.0*cm 32.50*cm -34.9483*cm
+:PLACE $sensorTName 144 $petalName2 R1 154.0*cm 37.50*cm -36.2702*cm
+:PLACE $sensorTName 145 $petalName2 R1 159.0*cm -37.50*cm -37.4713*cm
+:PLACE $sensorTName 146 $petalName2 R1 159.0*cm -32.50*cm -36.1374*cm
+:PLACE $sensorTName 147 $petalName2 R1 159.0*cm -27.50*cm -35.0047*cm
+:PLACE $sensorTName 148 $petalName2 R1 159.0*cm -22.50*cm -34.0681*cm
+:PLACE $sensorTName 149 $petalName2 R1 159.0*cm -17.50*cm -33.3235*cm
+:PLACE $sensorTName 150 $petalName2 R1 159.0*cm -12.50*cm -32.7678*cm
+:PLACE $sensorTName 151 $petalName2 R1 159.0*cm -7.50*cm -32.3986*cm
+:PLACE $sensorTName 152 $petalName2 R1 159.0*cm -2.50*cm -32.2143*cm
+:PLACE $sensorTName 153 $petalName2 R1 159.0*cm 2.50*cm -32.2143*cm
+:PLACE $sensorTName 154 $petalName2 R1 159.0*cm 7.50*cm -32.3986*cm
+:PLACE $sensorTName 155 $petalName2 R1 159.0*cm 12.50*cm -32.7678*cm
+:PLACE $sensorTName 156 $petalName2 R1 159.0*cm 17.50*cm -33.3235*cm
+:PLACE $sensorTName 157 $petalName2 R1 159.0*cm 22.50*cm -34.0681*cm
+:PLACE $sensorTName 158 $petalName2 R1 159.0*cm 27.50*cm -35.0047*cm
+:PLACE $sensorTName 159 $petalName2 R1 159.0*cm 32.50*cm -36.1374*cm
+:PLACE $sensorTName 160 $petalName2 R1 159.0*cm 37.50*cm -37.4713*cm
+:PLACE $sensorTName 161 $petalName2 R1 164.0*cm -37.50*cm -38.877*cm
+:PLACE $sensorTName 162 $petalName2 R1 164.0*cm -32.50*cm -37.5287*cm
+:PLACE $sensorTName 163 $petalName2 R1 164.0*cm -27.50*cm -36.3841*cm
+:PLACE $sensorTName 164 $petalName2 R1 164.0*cm -22.50*cm -35.4377*cm
+:PLACE $sensorTName 165 $petalName2 R1 164.0*cm -17.50*cm -34.6855*cm
+:PLACE $sensorTName 166 $petalName2 R1 164.0*cm -12.50*cm -34.1241*cm
+:PLACE $sensorTName 167 $petalName2 R1 164.0*cm -7.50*cm -33.7512*cm
+:PLACE $sensorTName 168 $petalName2 R1 164.0*cm -2.50*cm -33.5651*cm
+:PLACE $sensorTName 169 $petalName2 R1 164.0*cm 2.50*cm -33.5651*cm
+:PLACE $sensorTName 170 $petalName2 R1 164.0*cm 7.50*cm -33.7512*cm
+:PLACE $sensorTName 171 $petalName2 R1 164.0*cm 12.50*cm -34.1241*cm
+:PLACE $sensorTName 172 $petalName2 R1 164.0*cm 17.50*cm -34.6855*cm
+:PLACE $sensorTName 173 $petalName2 R1 164.0*cm 22.50*cm -35.4377*cm
+:PLACE $sensorTName 174 $petalName2 R1 164.0*cm 27.50*cm -36.3841*cm
+:PLACE $sensorTName 175 $petalName2 R1 164.0*cm 32.50*cm -37.5287*cm
+:PLACE $sensorTName 176 $petalName2 R1 164.0*cm 37.50*cm -38.877*cm
+//:PLACE $sensorTName 177 $petalName2 R1 169.0*cm -37.50*cm -40.4941*cm
+:PLACE $sensorTName 178 $petalName2 R1 169.0*cm -32.50*cm -39.1289*cm
+:PLACE $sensorTName 179 $petalName2 R1 169.0*cm -27.50*cm -37.9702*cm
+:PLACE $sensorTName 180 $petalName2 R1 169.0*cm -22.50*cm -37.0124*cm
+:PLACE $sensorTName 181 $petalName2 R1 169.0*cm -17.50*cm -36.2512*cm
+:PLACE $sensorTName 182 $petalName2 R1 169.0*cm -12.50*cm -35.6831*cm
+:PLACE $sensorTName 183 $petalName2 R1 169.0*cm -7.50*cm -35.3058*cm
+:PLACE $sensorTName 184 $petalName2 R1 169.0*cm -2.50*cm -35.1175*cm
+:PLACE $sensorTName 185 $petalName2 R1 169.0*cm 2.50*cm -35.1175*cm
+:PLACE $sensorTName 186 $petalName2 R1 169.0*cm 7.50*cm -35.3058*cm
+:PLACE $sensorTName 187 $petalName2 R1 169.0*cm 12.50*cm -35.6831*cm
+:PLACE $sensorTName 188 $petalName2 R1 169.0*cm 17.50*cm -36.2512*cm
+:PLACE $sensorTName 189 $petalName2 R1 169.0*cm 22.50*cm -37.0124*cm
+:PLACE $sensorTName 190 $petalName2 R1 169.0*cm 27.50*cm -37.9702*cm
+:PLACE $sensorTName 191 $petalName2 R1 169.0*cm 32.50*cm -39.1289*cm
+//:PLACE $sensorTName 192 $petalName2 R1 169.0*cm 37.50*cm -40.4941*cm
+:PLACE $sensorTName 193 $petalName2 R1 109.0*cm -37.50*cm -34.0681*cm
+:PLACE $sensorTName 194 $petalName2 R1 109.0*cm -32.50*cm -32.7678*cm
+:PLACE $sensorTName 195 $petalName2 R1 109.0*cm -27.50*cm -31.6631*cm
+:PLACE $sensorTName 196 $petalName2 R1 109.0*cm -22.50*cm -30.7493*cm
+:PLACE $sensorTName 197 $petalName2 R1 109.0*cm -17.50*cm -30.0226*cm
+:PLACE $sensorTName 198 $petalName2 R1 109.0*cm -12.50*cm -29.4801*cm
+:PLACE $sensorTName 199 $petalName2 R1 109.0*cm -7.50*cm -29.1197*cm
+:PLACE $sensorTName 200 $petalName2 R1 109.0*cm -2.50*cm -28.9398*cm
+:PLACE $sensorTName 201 $petalName2 R1 109.0*cm 2.50*cm -28.9398*cm
+:PLACE $sensorTName 202 $petalName2 R1 109.0*cm 7.50*cm -29.1197*cm
+:PLACE $sensorTName 203 $petalName2 R1 109.0*cm 12.50*cm -29.4801*cm
+:PLACE $sensorTName 204 $petalName2 R1 109.0*cm 17.50*cm -30.0226*cm
+:PLACE $sensorTName 205 $petalName2 R1 109.0*cm 22.50*cm -30.7493*cm
+:PLACE $sensorTName 206 $petalName2 R1 109.0*cm 27.50*cm -31.6631*cm
+:PLACE $sensorTName 207 $petalName2 R1 109.0*cm 32.50*cm -32.7678*cm
+:PLACE $sensorTName 208 $petalName2 R1 109.0*cm 37.50*cm -34.0681*cm
+:PLACE $sensorTName 209 $petalName2 R1 104.0*cm -37.50*cm -34.7606*cm
+:PLACE $sensorTName 210 $petalName2 R1 104.0*cm -32.50*cm -33.4535*cm
+:PLACE $sensorTName 211 $petalName2 R1 104.0*cm -27.50*cm -32.3433*cm
+:PLACE $sensorTName 212 $petalName2 R1 104.0*cm -22.50*cm -31.4249*cm
+:PLACE $sensorTName 213 $petalName2 R1 104.0*cm -17.50*cm -30.6947*cm
+:PLACE $sensorTName 214 $petalName2 R1 104.0*cm -12.50*cm -30.1495*cm
+:PLACE $sensorTName 215 $petalName2 R1 104.0*cm -7.50*cm -29.7873*cm
+:PLACE $sensorTName 216 $petalName2 R1 104.0*cm -2.50*cm -29.6065*cm
+:PLACE $sensorTName 217 $petalName2 R1 104.0*cm 2.50*cm -29.6065*cm
+:PLACE $sensorTName 218 $petalName2 R1 104.0*cm 7.50*cm -29.7873*cm
+:PLACE $sensorTName 219 $petalName2 R1 104.0*cm 12.50*cm -30.1495*cm
+:PLACE $sensorTName 220 $petalName2 R1 104.0*cm 17.50*cm -30.6947*cm
+:PLACE $sensorTName 221 $petalName2 R1 104.0*cm 22.50*cm -31.4249*cm
+:PLACE $sensorTName 222 $petalName2 R1 104.0*cm 27.50*cm -32.3433*cm
+:PLACE $sensorTName 223 $petalName2 R1 104.0*cm 32.50*cm -33.4535*cm
+:PLACE $sensorTName 224 $petalName2 R1 104.0*cm 37.50*cm -34.7606*cm
