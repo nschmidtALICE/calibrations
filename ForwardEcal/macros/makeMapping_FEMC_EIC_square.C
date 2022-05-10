@@ -182,6 +182,31 @@ void makeMapping_FEMC_EIC_square( TString setup="FwdSquare_ROS")
       tower_dy = 5.535; // cm
       tower_dz = 36.3; // cm (FULL SIZE)
     }
+  else if ( setup == "ALICETB" )
+    {
+      squarecutout = true;
+      /* Global detector position / transformation */
+      femc_x0 =  0.0; // cm,
+      femc_y0 =  0.0; // cm,
+      femc_z0 = 90.0; // cm,
+
+      femc_rot_x0 =  0.0;
+      femc_rot_y0 =  0.0;
+      femc_rot_z0 =  0.0;
+
+      /* Detector envelope size (cone shape) */
+      femc_rmin1 = 0.0; // cm - accomodate Mar 2020 EIC beam pipe
+      femc_rmax1 = 25; // cm
+      femc_rmin2 = 0.0; // cm - accomodate Mar 2020 EIC beam pipe
+      femc_rmax2 = 25; // cm
+      femc_dz = 24.7; // cm (FULL SIZE)
+
+      /* Tower parameters */
+      // From PHENIX EMCal JGL 12/27/2015
+      tower_dx = 6.0; // cm
+      tower_dy = 6.0; // cm
+      tower_dz = 24.7; // cm (FULL SIZE)
+    }
   else if ( setup == "FwdSquare_ROS" )
     {
       squarecutout = true;

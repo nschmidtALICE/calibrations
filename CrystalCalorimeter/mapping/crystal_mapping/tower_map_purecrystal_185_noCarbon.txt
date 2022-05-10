@@ -8,7 +8,7 @@ Gdy 2.05
 Gdz 20
 Gx0 0
 Gy0 0
-Gz0 -185
+Gz0 0
 Grot_x 0
 Grot_y 0
 Grot_z 0

@@ -7,7 +7,7 @@ Gr2_outer 183.10000
 Gdz 37.5
 Gx0 0
 Gy0 0
-Gz0 310
+Gz0 314.5
 Grot_x 0
 Grot_y 0
 Grot_z 0

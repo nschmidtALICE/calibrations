@@ -60,14 +60,18 @@ void makeMapping_LFHCAL_EIC( TString setup="2x" )
       lhcal_rmin1 = 14; // cm
       lhcal_rmin2 = 14; // cm
 
-  } else if ( setup.Contains("FwdConfig") ) {
+  } else if ( setup.Contains("FwdConfig-long-tailcatcher") ) {
 
       /* Detector envelope size (cone shape) */
       lhcal_rmin1 = 50; // cm
       lhcal_rmin2 = 50; // cm
-      tower_dx = 5.535; // cm
-      tower_dy = 5.535; // cm
-
+      width_coating = 0.005;
+      frame_width   = 0.1;
+      embed_fiber  = 1;
+      lhcal_z0    = 420.0; // cm,
+      lhcal_dz    = 140.; // cm
+      tower_dz    = 140.; //cm
+      usetailcatcher = 1;
   }  else if ( setup.Contains("wDR") ){
 
       /* Detector envelope size (cone shape) */
