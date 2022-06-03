@@ -1,0 +1,41 @@
+## -----------------------------------------------------------
+## Luminosity monitor, photon exit window, spectrometer and its magnet
+##
+## sizes are in cm and angles in radians
+##   
+# Lumi exit window
+LumiWin_X               0
+LumiWin_Y               0
+LumiWin_Z               -1850
+LumiWin_Tilt            1.3207963
+LumiWin_Thickness       0.26
+LumiWin_Height          7.4
+LumiWin_Length          29
+LumiWin_Material        G4_Al
+# Lumi spectrometer dipole magnet
+LumiMag_Z               -2820
+LumiMag_innerR          10
+LumiMag_outerR          16
+LumiMag_DZ              60
+LumiMag_B               0.37
+LumiMag_VesselMaterial  G4_Fe
+# Lumi spectrometers up and down
+LumiSpec_Z 		-3640
+LumiSpec_XY 		20
+LumiSpec_DZ 		35
+LumiSpec_YS 		6
+#Luminosity direct photon calorimeter
+LumiPhotonCAL_Z 	-3700
+LumiPhotonCAL_XY 	16
+LumiPhotonCAL_DZ 	35
+#Luminosity Version
+Version			3
+#Tracker2 Details
+LumiTracker2_DZ		0.06
+LumiTracker2_XY		20
+#Tracker1 Details
+LumiTracker1Gap		2.0
+#Dimension for single ee spectrometer Tower
+LumiSpecTower_XY	2.5
+LumiSpecTower_DZ	17
+TotalLumiSpecTower	8
